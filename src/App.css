@@ -13,15 +13,67 @@
   }
 }
 
-.App-header {
-  background-color: #282c34;
+.App-main {
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  background: #f5f7fb;
+}
+
+.qr-card {
+  background: #fff;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(32,33,36,0.08);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qr-image {
+  width: 300px;
+  height: 300px;
+  display: block;
+}
+
+.qr-card h3 {
+  margin: 0 0 12px 0;
+}
+
+.qr-card label {
+  display: block;
+  margin: 8px 0;
+  font-size: 14px;
+  color: #222;
+}
+
+.qr-card input,
+.qr-card select {
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  margin-top: 6px;
+  box-sizing: border-box;
+  border: 1px solid #e3e7ef;
+  border-radius: 6px;
+}
+
+.qr-card button {
+  margin-top: 12px;
+  padding: 10px 16px;
+  background: #2563eb;
   color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.qr-card pre {
+  background: #f7fbff;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #e6eefc;
 }
 
 .App-link {
