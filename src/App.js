@@ -28,6 +28,17 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
 
+  // receipt upload (local only) so user can "chụp bill" and preview before sending to Nghị
+  const [receiptFile, setReceiptFile] = useState(null);
+  const [receiptPreview, setReceiptPreview] = useState(null);
+
+  const handleFileChange = (e) => {
+    const f = e.target.files && e.target.files[0];
+    if (!f) return;
+    setReceiptFile(f);
+    setReceiptPreview(URL.createObjectURL(f));
+  };
+
   const handleSubmit = async () => {
     setLoading(true);
     setResult(null);
@@ -43,10 +54,7 @@ function App() {
       setResult(data);
 
       if (data?.redirect_url) {
-        // sửa ở đây
-        setTimeout(() => {
-          window.location.assign(data.redirect_url);
-        }, 300);
+        setTimeout(() => window.location.assign(data.redirect_url), 300);
       }
     } catch (err) {
       setResult({ error: err.message });
@@ -55,58 +63,55 @@ function App() {
     }
   };
 
+  const handleSendReceipt = () => {
+    // For now we just show the selected file info in the UI. In a real app you'd POST it to your server.
+    if (!receiptFile) {
+      setResult({ error: "Vui lòng chọn ảnh bill trước khi gửi." });
+      return;
+    }
+    setResult({ receipt: { name: receiptFile.name, size: receiptFile.size } });
+  };
+
   return (
     <div className="App">
       <main className="App-main">
-        <div className="qr-card">
-          <label>
-            Chọn mệnh giá
-            <select
-              value={denomination}
-              onChange={(e) => {
-                setDenomination(e.target.value);
-                setProductId(denominationMap[e.target.value]);
-              }}
-            >
-              {Object.keys(denominationMap).map((k) => (
-                <option key={k} value={k}>
-                  {k}
-                </option>
-              ))}
-            </select>
-          </label>
+        <div className="qr-card nice-card">
+          <header className="card-header">
+            <h1>Thanh toán nạp tiền</h1>
+            <p className="subtitle">Chọn mệnh giá, bấm Thanh toán. Khi thanh toán xong, chụp bill lại cho Nghị.</p>
+          </header>
+          
+          <div className="card-body">
+            <div className="left">
+              <label className="field">
+                <div className="field-label">Chọn mệnh giá</div>
+                <select
+                  value={denomination}
+                  onChange={(e) => {
+                    setDenomination(e.target.value);
+                    setProductId(denominationMap[e.target.value]);
+                  }}
+                >
+                  {Object.keys(denominationMap).map((k) => (
+                    <option key={k} value={k}>{k}</option>
+                  ))}
+                </select>
+              </label>
 
-          <label style={{ display: "none" }}>
-            Product ID (ẩn)
-            <input value={productId} readOnly />
-          </label>
+              <div style={{ display: 'none' }}>
+                <input value={productId} readOnly />
+                <input value={paymentMethod} readOnly />
+                <input value={email} readOnly />
+              </div>
 
-          <label style={{ display: "none" }}>
-            Payment (ẩn)
-            <input value={paymentMethod} readOnly />
-          </label>
+              <button className="primary" onClick={handleSubmit} disabled={loading}>
+                {loading ? "Đang gửi..." : "Thanh toán"}
+              </button>
+            </div>
 
-          <label style={{ display: "none" }}>
-            Email (ẩn)
-            <input value={email} readOnly />
-          </label>
-
-          <button onClick={handleSubmit} disabled={loading}>
-            {loading ? "Đang gửi..." : "Gửi"}
-          </button>
-
-          {result && (
-            <pre
-              style={{
-                textAlign: "left",
-                marginTop: 12,
-                maxHeight: 240,
-                overflow: "auto",
-              }}
-            >
-              {JSON.stringify(result, null, 2)}
-            </pre>
-          )}
+    
+        
+          </div>
         </div>
       </main>
     </div>

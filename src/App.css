@@ -26,7 +26,7 @@
   padding: 24px;
   border-radius: 12px;
   box-shadow: 0 6px 20px rgba(32,33,36,0.08);
-  display: inline-flex;
+  /* display: inline-flex; */
   align-items: center;
   justify-content: center;
 }
@@ -79,6 +79,81 @@
 .App-link {
   color: #61dafb;
 }
+
+/* New card layout styles */
+.nice-card {
+  width: 820px;
+  max-width: 95%;
+}
+
+.card-header {
+  text-align: left;
+  margin-bottom: 14px;
+}
+
+.card-header h1 {
+  margin: 0 0 6px 0;
+  font-size: 20px;
+  color: #111827;
+}
+
+.subtitle {
+  margin: 0;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.card-body {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.left {
+  flex: 1 1 320px;
+}
+
+.right {
+  width: 320px;
+  flex: 0 0 320px;
+}
+
+.field { 
+  margin-bottom: 12px;
+}
+
+.field-label {
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+.primary {
+  width: 100%;
+  padding: 12px 14px;
+  background: linear-gradient(90deg,#2563eb,#4f46e5);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.primary:disabled { opacity: 0.6; cursor: default; }
+
+.secondary {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: #fff;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.receipt-upload input[type="file"] { margin-top: 8px; }
+.preview img { max-width: 100%; border-radius: 8px; margin-top: 8px; border: 1px solid #e6eefc; }
+.result { margin-top: 12px; text-align: left; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #e6eefc; }
 
 @keyframes App-logo-spin {
   from {
