@@ -142,7 +142,6 @@
 .primary:disabled { opacity: 0.6; cursor: default; }
 
 .secondary {
-  margin-top: 8px;
   padding: 8px 12px;
   background: #fff;
   color: #374151;
@@ -151,9 +150,69 @@
   cursor: pointer;
 }
 
+.confirm-box {
+  margin-top: 16px;
+  padding: 16px;
+  background: #f8fafc;
+  border: 1px solid #e6eefc;
+  border-radius: 10px;
+}
+
+.confirm-box .message {
+  margin-bottom: 12px;
+  color: #111827;
+  font-weight: 500;
+}
+
+.confirm-box button {
+  margin: 4px;
+  min-width: 120px;
+}
+
+.confirm-box .confirm {
+  background: #059669;
+  background-image: linear-gradient(90deg, #059669, #10b981);
+}
+
 .receipt-upload input[type="file"] { margin-top: 8px; }
 .preview img { max-width: 100%; border-radius: 8px; margin-top: 8px; border: 1px solid #e6eefc; }
 .result { margin-top: 12px; text-align: left; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #e6eefc; }
+
+/* Denomination tiles */
+.denom-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.denom-tile {
+  padding: 10px 8px;
+  border-radius: 8px;
+  border: 1px solid #e6eefc;
+  background: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  color: #111827;
+  transition: all 180ms ease;
+}
+
+.denom-tile:hover { box-shadow: 0 6px 20px rgba(37,99,235,0.10); transform: translateY(-2px); }
+
+.denom-tile.active {
+  background: linear-gradient(90deg,#0b5fff,#0b4fda); /* stronger blue */
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 12px 30px rgba(11,95,255,0.22);
+  transform: translateY(-4px) scale(1.02);
+}
+
+.denom-tile:focus { outline: none; box-shadow: 0 8px 26px rgba(37,99,235,0.12); }
+
+@media (max-width: 560px) {
+  .denom-grid { grid-template-columns: repeat(2, 1fr); }
+  .right { display: none; }
+}
 
 @keyframes App-logo-spin {
   from {

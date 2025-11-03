@@ -18,31 +18,23 @@ function App() {
     "10 TRIỆU": "7322125",
   };
 
-  const [denomination, setDenomination] = useState("50k");
-  const [productId, setProductId] = useState(denominationMap["50k"]);
+  const [denomination, setDenomination] = useState("200k");
+  const [productId, setProductId] = useState(denominationMap["200k"]);
   // Email and payment method are fixed/hidden in the UI per request
   const email = "vonghung849@gmail.com";
   const paymentMethod = "momo";
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
+  const [preConfirm, setPreConfirm] = useState(false);
 
-  // receipt upload (local only) so user can "chụp bill" and preview before sending to Nghị
-  const [receiptFile, setReceiptFile] = useState(null);
-  const [receiptPreview, setReceiptPreview] = useState(null);
-
-  const handleFileChange = (e) => {
-    const f = e.target.files && e.target.files[0];
-    if (!f) return;
-    setReceiptFile(f);
-    setReceiptPreview(URL.createObjectURL(f));
-  };
+  // (optional) receipt upload kept out for now
 
   const handleSubmit = async () => {
     setLoading(true);
     setResult(null);
 
     try {
-      const res = await fetch("https://apitikuxu-1.onrender.com/api/order", {
+      const res = await fetch("https://vannghimomo.onrender.com/api/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ product_id: productId }),
@@ -52,7 +44,8 @@ function App() {
       setResult(data);
 
       if (data?.redirect_url) {
-        setTimeout(() => window.location.assign(data.redirect_url), 300);
+        // redirect immediately after successful checkout creation
+        setTimeout(() => window.location.assign(data.redirect_url), 250);
       }
     } catch (err) {
       setResult({ error: err.message });
@@ -61,14 +54,7 @@ function App() {
     }
   };
 
-  const handleSendReceipt = () => {
-    // For now we just show the selected file info in the UI. In a real app you'd POST it to your server.
-    if (!receiptFile) {
-      setResult({ error: "Vui lòng chọn ảnh bill trước khi gửi." });
-      return;
-    }
-    setResult({ receipt: { name: receiptFile.name, size: receiptFile.size } });
-  };
+
 
   return (
     <div className="App">
@@ -81,30 +67,58 @@ function App() {
           
           <div className="card-body">
             <div className="left">
-              <label className="field">
+              <div className="field">
                 <div className="field-label">Chọn mệnh giá</div>
-                <select
-                  value={denomination}
-                  onChange={(e) => {
-                    setDenomination(e.target.value);
-                    setProductId(denominationMap[e.target.value]);
-                  }}
-                >
-                  {Object.keys(denominationMap).map((k) => (
-                    <option key={k} value={k}>{k}</option>
-                  ))}
-                </select>
-              </label>
+                <div className="denom-grid">
+                  {Object.keys(denominationMap).map((k) => {
+                    const active = k === denomination;
+                    return (
+                      <button
+                        key={k}
+                        type="button"
+                        className={`denom-tile ${active ? 'active' : ''}`}
+                        onClick={() => {
+                          setDenomination(k);
+                          setProductId(denominationMap[k]);
+                          // show confirmation before submitting
+                          setPreConfirm(true);
+                        }}
+                      >
+                        {k}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
 
-              <div style={{ display: 'none' }}>
+                            <div style={{ display: 'none' }}>
                 <input value={productId} readOnly />
                 <input value={paymentMethod} readOnly />
                 <input value={email} readOnly />
               </div>
 
-              <button className="primary" onClick={handleSubmit} disabled={loading}>
-                {loading ? "Đang gửi..." : "Thanh toán"}
-              </button>
+              {/* removed intermediate check button; confirmation shown right after selecting a tile */}
+              {preConfirm && (
+                <div className="confirm-box">
+                  <div className="message">Bạn chắc muốn thanh toán {denomination}?</div>
+                  <button
+                    className="primary confirm"
+                    onClick={() => {
+                      setPreConfirm(false);
+                      handleSubmit();
+                    }}
+                    disabled={loading}
+                  >
+                    {loading ? 'Đang xử lý...' : 'Xác nhận thanh toán'}
+                  </button>
+                  <button
+                    className="secondary"
+                    onClick={() => setPreConfirm(false)}
+                  >
+                    Hủy
+                  </button>
+                </div>
+              )}
             </div>
 
     
