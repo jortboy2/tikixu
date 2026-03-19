@@ -57,8 +57,8 @@ function App() {
           <header className="card-header">
             <h1>Thanh toán nạp tiền</h1>
             <p className="subtitle">
-              Chọn mệnh giá, bấm Thanh toán. Khi thanh toán xong, chụp bill lại
-              cho Nghị.
+              {/* Chọn mệnh giá, bấm Thanh toán. Khi thanh toán xong, chụp bill lại
+              cho Nghị. */}
             </p>
           </header>
 
@@ -107,7 +107,7 @@ function App() {
               {preConfirm && (
                 <div className="confirm-box">
                   <div className="message">
-                    Bạn chắc muốn thanh toán {denomination}?
+                    {/* Bạn chắc muốn thanh toán {denomination}? */}
                   </div>
                   <button
                     className="primary confirm"
