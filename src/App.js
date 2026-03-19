@@ -5,17 +5,6 @@ function App() {
   // Map visible denominations to product IDs
   const denominationMap = {
     "200k": "1559583",
-    "300k": "7321981",
-    "400k": "7322049",
-    "500k": "1559587",
-    "800k": "9672466",
-    "1 TRIỆU": "1559591",
-    "1 TRIỆU 500K": "24376737",
-    "2 TRIỆU": "1559595",
-    "3 TRIỆU": "2648647",
-    "4 TRIỆU": "24382189",
-    "5 TRIỆU": "1559603",
-    "10 TRIỆU": "7322125",
   };
 
   const [denomination, setDenomination] = useState("200k");
@@ -26,6 +15,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [preConfirm, setPreConfirm] = useState(false);
+  const [quantity, setQuantity] = useState(1);
 
   // (optional) receipt upload kept out for now
 
@@ -34,11 +24,17 @@ function App() {
     setResult(null);
 
     try {
-      const res = await fetch("https://vannghimomo.onrender.com/api/order/muathe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ product_id: productId }),
-      });
+      const res = await fetch(
+        "https://vannghimomo.onrender.com/api/order/muathe",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          // body: JSON.stringify({ product_id: productId }),
+          body: JSON.stringify({
+            quantity: quantity,
+          }),
+        },
+      );
 
       const data = await res.json();
       setResult(data);
@@ -54,17 +50,18 @@ function App() {
     }
   };
 
-
-
   return (
     <div className="App">
       <main className="App-main">
         <div className="qr-card nice-card">
           <header className="card-header">
             <h1>Thanh toán nạp tiền</h1>
-            <p className="subtitle">Chọn mệnh giá, bấm Thanh toán. Khi thanh toán xong, chụp bill lại cho Nghị.</p>
+            <p className="subtitle">
+              Chọn mệnh giá, bấm Thanh toán. Khi thanh toán xong, chụp bill lại
+              cho Nghị.
+            </p>
           </header>
-          
+
           <div className="card-body">
             <div className="left">
               <div className="field">
@@ -76,7 +73,7 @@ function App() {
                       <button
                         key={k}
                         type="button"
-                        className={`denom-tile ${active ? 'active' : ''}`}
+                        className={`denom-tile ${active ? "active" : ""}`}
                         onClick={() => {
                           setDenomination(k);
                           setProductId(denominationMap[k]);
@@ -90,8 +87,17 @@ function App() {
                   })}
                 </div>
               </div>
-
-                            <div style={{ display: 'none' }}>
+              <div className="field">
+                <div className="field-label">Số lượng</div>
+                <input
+                  type="number"
+                  min="1"
+                  value={quantity}
+                  onChange={(e) => setQuantity(Number(e.target.value))}
+                  className="quantity-input"
+                />
+              </div>
+              <div style={{ display: "none" }}>
                 <input value={productId} readOnly />
                 <input value={paymentMethod} readOnly />
                 <input value={email} readOnly />
@@ -100,7 +106,9 @@ function App() {
               {/* removed intermediate check button; confirmation shown right after selecting a tile */}
               {preConfirm && (
                 <div className="confirm-box">
-                  <div className="message">Bạn chắc muốn thanh toán {denomination}?</div>
+                  <div className="message">
+                    Bạn chắc muốn thanh toán {denomination}?
+                  </div>
                   <button
                     className="primary confirm"
                     onClick={() => {
@@ -109,7 +117,7 @@ function App() {
                     }}
                     disabled={loading}
                   >
-                    {loading ? 'Đang xử lý...' : 'Xác nhận thanh toán'}
+                    {loading ? "Đang xử lý..." : "Xác nhận thanh toán"}
                   </button>
                   <button
                     className="secondary"
@@ -120,9 +128,6 @@ function App() {
                 </div>
               )}
             </div>
-
-    
-        
           </div>
         </div>
       </main>
