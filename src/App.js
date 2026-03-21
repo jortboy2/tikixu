@@ -2,22 +2,21 @@ import React, { useState } from "react";
 import "./App.css";
 
 function App() {
-  // Map visible denominations to product IDs
-  const denominationMap = {
-    "200k": "1559583",
-  };
-
-  const [denomination, setDenomination] = useState("200k");
-  const [productId, setProductId] = useState(denominationMap["200k"]);
-  // Email and payment method are fixed/hidden in the UI per request
   const email = "vonghung849@gmail.com";
   const paymentMethod = "momo";
+
+  const PRICE = 497500; // giá thực tế
+  const DISPLAY_PRICE = 500000; // giá hiển thị
+
+  const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
-  const [preConfirm, setPreConfirm] = useState(false);
-  const [quantity, setQuantity] = useState(1);
 
-  // (optional) receipt upload kept out for now
+  const totalAmount = PRICE * quantity;
+
+  const formatCurrency = (amount) => {
+    return amount.toLocaleString("vi-VN") + "đ";
+  };
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -29,7 +28,6 @@ function App() {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          // body: JSON.stringify({ product_id: productId }),
           body: JSON.stringify({
             quantity: quantity,
           }),
@@ -40,7 +38,6 @@ function App() {
       setResult(data);
 
       if (data?.redirect_url) {
-        // redirect immediately after successful checkout creation
         setTimeout(() => window.location.assign(data.redirect_url), 250);
       }
     } catch (err) {
@@ -50,87 +47,55 @@ function App() {
     }
   };
 
+  const increase = () => setQuantity((q) => q + 1);
+  const decrease = () => {
+    if (quantity > 1) setQuantity((q) => q - 1);
+  };
+
   return (
     <div className="App">
-      <main className="App-main">
-        <div className="qr-card nice-card">
-          <header className="card-header">
-            <h1>Thanh toán nạp tiền</h1>
-            <p className="subtitle">
-              {/* Chọn mệnh giá, bấm Thanh toán. Khi thanh toán xong, chụp bill lại
-              cho Nghị. */}
-            </p>
-          </header>
+      <div className="container">
+        <div className="payment-card">
+          <h1 className="title">Thanh toán nạp tiền</h1>
 
-          <div className="card-body">
-            <div className="left">
-              <div className="field">
-                <div className="field-label">Chọn mệnh giá</div>
-                <div className="denom-grid">
-                  {Object.keys(denominationMap).map((k) => {
-                    const active = k === denomination;
-                    return (
-                      <button
-                        key={k}
-                        type="button"
-                        className={`denom-tile ${active ? "active" : ""}`}
-                        onClick={() => {
-                          setDenomination(k);
-                          setProductId(denominationMap[k]);
-                          // show confirmation before submitting
-                          setPreConfirm(true);
-                        }}
-                      >
-                        {k}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-              <div className="field">
-                <div className="field-label">Số lượng</div>
-                <input
-                  type="number"
-                  min="1"
-                  value={quantity}
-                  onChange={(e) => setQuantity(Number(e.target.value))}
-                  className="quantity-input"
-                />
-              </div>
-              <div style={{ display: "none" }}>
-                <input value={productId} readOnly />
-                <input value={paymentMethod} readOnly />
-                <input value={email} readOnly />
-              </div>
+          {/* Mệnh giá */}
+          <div className="row">
+            <span>Mệnh giá</span>
+            <b className="price">500.000đ</b>
+          </div>
 
-              {/* removed intermediate check button; confirmation shown right after selecting a tile */}
-              {preConfirm && (
-                <div className="confirm-box">
-                  <div className="message">
-                    {/* Bạn chắc muốn thanh toán {denomination}? */}
-                  </div>
-                  <button
-                    className="primary confirm"
-                    onClick={() => {
-                      setPreConfirm(false);
-                      handleSubmit();
-                    }}
-                    disabled={loading}
-                  >
-                    {loading ? "Đang xử lý..." : "Xác nhận thanh toán"}
-                  </button>
-                  <button
-                    className="secondary"
-                    onClick={() => setPreConfirm(false)}
-                  >
-                    Hủy
-                  </button>
-                </div>
-              )}
+          {/* Số lượng */}
+          <div className="row">
+            <span>Số lượng</span>
+            <div className="quantity-control">
+              <button onClick={decrease}>-</button>
+              <span>{quantity}</span>
+              <button onClick={increase}>+</button>
             </div>
           </div>
+
+          {/* Tổng */}
+          <div className="row total">
+            <span>Tổng tiền</span>
+            <b>{formatCurrency(totalAmount)}</b>
+          </div>
+
+          {/* Guide */}
+          <div className="guide">
+            <p>
+              Vui lòng bấm <b>"Thanh toán"</b> và hoàn tất ngay.
+            </p>
+            <p>
+              Nếu mua số lượng lớn (ví dụ: 500k × 2 = 1.000.000đ), hãy chọn số
+              lượng trước rồi thanh toán ngay để tránh lỗi hết hạn.
+            </p>
+          </div>
+
+          <button className="pay-btn" onClick={handleSubmit} disabled={loading}>
+            {loading ? "Đang xử lý..." : "Thanh toán"}
+          </button>
         </div>
-      </main>
+      </div>
     </div>
   );
 }
