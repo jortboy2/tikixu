@@ -5,8 +5,8 @@ function App() {
   const email = "vonghung849@gmail.com";
   const paymentMethod = "momo";
 
-  const PRICE = 497500; // giá thực tế
-  const DISPLAY_PRICE = 500000; // giá hiển thị
+  const PRICE = 200000; // giá thực tế
+  const DISPLAY_PRICE = 200000; // giá hiển thị // giá hiển thị
 
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -47,7 +47,13 @@ function App() {
     }
   };
 
-  const increase = () => setQuantity((q) => q + 1);
+  const MAX_TOTAL = 2000000;
+
+  const increase = () => {
+    if ((quantity + 1) * PRICE <= MAX_TOTAL) {
+      setQuantity((q) => q + 1);
+    }
+  };
   const decrease = () => {
     if (quantity > 1) setQuantity((q) => q - 1);
   };
@@ -61,7 +67,7 @@ function App() {
           {/* Mệnh giá */}
           <div className="row">
             <span>Mệnh giá</span>
-            <b className="price">500.000đ</b>
+            <b className="price">200.000đ</b>
           </div>
 
           {/* Số lượng */}
