@@ -4,9 +4,6 @@ import "./App.css";
 function App() {
   // Map visible denominations to product IDs
   const denominationMap = {
-    "200k": "1559583",
-    "300k": "7321981",
-    "400k": "7322049",
     "500k": "1559587",
     "800k": "9672466",
     "1 TRIỆU": "1559591",
